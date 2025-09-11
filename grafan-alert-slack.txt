@@ -1,0 +1,124 @@
+How to set up alerts to slack from Grafana
+
+1. Go to Slack API Site
+👉 Open this link in your browser:
+https://api.slack.com/apps
+
+
+2. Create a New App
+Click "Create New App"
+Choose "From scratch"
+App name: Grafana Alerts (or anything you like)
+Workspace: Choose your current workspace (ClahanTechnologies)
+Click Create App
+
+
+
+3. Enable Incoming Webhooks
+In the left menu, click "Incoming Webhooks"
+Toggle ON Activate Incoming Webhooks
+
+
+4. Add a Webhook URL
+Scroll down to Webhook URLs for Your Workspace
+Click "Add New Webhook to Workspace"
+
+Choose the #general channel (or #devops-team-training)
+Click Allow
+
+
+
+
+
+5. Copy the Webhook URL
+You'll now see something like:
+https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
+Copy this URL — this is what you’ll paste into Grafana.
+
+
+✅ Step: Add This Webhook to Grafana
+1.Open Grafana
+2.Go to Alerting → Contact points
+3.Click "New contact point"
+
+4.Type: Slack
+5.Paste the Webhook URL
+6.Name: Slack Alerts
+7.Save
+
+
+
+
+
+
+
+Now all alerts can be routed to this Slack channel 🎯
+
+
+🔔 Final Step After Saving:
+Go to Alerting > Notification policies
+Click to Add a new policy or edit an existing one
+Set your new Slack contact point under "Send to"
+Define matching conditions or leave as default to send all alerts
+
+
+
+
+
+
+
+How to set up Alerts in Grafana
+
+🧠 Prerequisites
+✔ Grafana is running.
+✔ Prometheus is your data source and collecting metrics from your cluster.
+✔ Slack Webhook is connected in Grafana → Alerting → Contact Points.
+✔ You’re using Grafana v8+, which supports Unified Alerting.
+
+🔔 Alert #1: High CPU Usage
+📍 Create Alert Rule
+1.Go to Grafana → Alerting → Alert Rules
+2.Click ➕ New alert rule
+
+3.Name: High CPU Usage
+4.Data source: Prometheus
+5.Query: (to add query switch to code mode from build mode)
+
+
+Now add below query 
+100 - (avg by(instance)(rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100)
+
+6.Set Condition:
+WHEN last() OF A IS ABOVE 90
+FOR 5m
+
+
+
+
+Next need to add folder 👇
+
+
+
+
+
+Next need to Create or Choose an Evaluation Group
+
+
+
+
+Next step do as below pic 👇
+
+
+Finally alert rule has been created 👇
+
+
+
+
+
+
+
+
+
+Final step sav rule and exit
+
+
