@@ -1,0 +1,112 @@
+Ansible lab set
+Create two instances with amazon linux kernel 6.12(give names ansible-server and host-server)
+Connect two instances 
+Execute following commands on ansible server 👇
+          sudo yum update -y
+sudo dnf update -y
+
+sudo dnf install -y ansible
+
+sudo curl -o /etc/ansible/ansible.cfg https://raw.githubusercontent.com/ansible/ansible/stable-2.15/examples/ansible.cfg
+
+ansible --version
+
+cd /etc/ansible
+
+
+# open ansible ansible.cfg and add below lines inside the file 
+
+[defaults]
+inventory = /etc/ansible/hosts
+host_key_checking = False
+retry_files_enabled = False
+sudo_user = root
+
+
+
+
+
+
+vi ansible.cfg
+
+
+It can show some error so use > ansible.cfg command to delete all content inside it.
+#  create a file named hosts after open hosts file and add webservers and add your target machine pvt ip add . 
+Make sure that the hosts file is getting created in root user and using ls we can see ansible.cfg file.
+vi hosts
+
+
+Come to home directory
+cd /home/ec2-user
+Create one user for ansible
+useradd ansible
+Set a password for this user
+passwd ansible
+
+
+Become as a ansible user
+su - ansible
+
+
+Next you need to provide sudo privileges to ansible user (exit from the ansible user)
+
+Open visudo file
+visudo
+add this command under Root line   ansible ALL=(ALL) NOPASSWD: ALL
+
+Now create one ansible user on host-server/target machine as same as ansible-server and give same password here.
+Open visudo file and give sudo privileges to ansible user
+visudo 
+
+
+
+
+
+
+We have to establish connection between ansible server and host server, follow the below steps on ansible server 
+Open file /etc/ssh/sshd_config
+vi /etc/ssh/sshd_config
+Uncomment for PermitRootLogin prohibit-passwd but remove prohibit-password replace with yes and find out this line passwordAuthentication no but remove no replace with yes
+
+
+
+
+Same steps do for host-server also ☝️
+vi /etc/ssh/sshd_config  
+Uncomment for PermitRootLogin prohibit-passwd but remove prohibit-password replace with yes and find out this line  passwordAuthentication no but remove no replace with yes
+
+
+Now you need to check connection between ansible-server and host-server
+Next you need to restart servers both ansible-server and host-server 
+service sshd restart (on both servers)
+
+Now become as a ansible user on ansible-server
+Next Copy pvt ip address of host-server 
+Go to ansible server use below command
+ssh <pvt-ip-add>   (host-server pvt ip add)
+
+Now its connected to your host-server (check pvt ip add of host-server)☝️
+Next exit from the host-server
+
+Now you need to make connection between servers without providing password and follow below commands on ansible-server 👇 (run commands as an ansible user only)
+ssh-keygen (it will generate two types keys one is public key & pvt key)
+
+Now look for key using 
+ls -la
+cd .ssh
+
+How to copy public key to host-server from ansible-server 👇
+ssh-copy-id ansible@pvt-ip-add-of-host-server and it will ask passwd provide ansible user passwd only 👇
+
+
+Now do cross check by login to host-server from ansible-server without providing any passwd using below command 👇
+ssh <pvt-ip-add>  (host-server-pvt-ip-add)
+
+Now you can check on host-server whether key is copied or not 👇
+
+
+Also you can check the connection from ansible-server using below command 
+ansible webservers -a “ls”
+
+
+Lab set was done
