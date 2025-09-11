@@ -1,0 +1,109 @@
+Email Integration with Jenkins and Plugin Setup
+Step-1:
+
+
+Step-2:
+Go to your Gmail and click on your profile
+Then click on Manage Your Google Account –> click on the security tab on the left side panel you will get this page (provide mail password).
+
+On search bar type app you will see app password
+
+
+
+
+
+Copy n save the passwd
+
+Once the plugin is installed in Jenkins, click on manage Jenkins –> configure system there under the E-mail Notification section configure the details as shown in the below image
+Configure as below highlighted
+
+
+Provide ur gmail for testing purpose 
+
+
+After check ur mail it will send on test mail
+
+After click on apply and save
+Click on Manage Jenkins–> credentials and add your mail username and generated password
+
+
+Now under the Extended E-mail Notification section configure the details as shown in the below images
+
+Next follow steps 👇
+
+Next click on additional groovy classpath > default triggers 👇
+
+After click on apply n save ☝️
+
+SonarQube – Jenkins pipeline script 
+pipeline {
+    agent any
+
+    environment {
+        SCANNER_HOME = tool 'sonar-scanner'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', credentialsId: 'githubt-token', url: 'https://github.com/Davidgit526/Admin-Retail-Application.git'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv("sonar") {
+                    sh """
+                        ${SCANNER_HOME}/bin/sonar-scanner \\
+                          -Dsonar.projectKey=Retail-app-code-quality \\
+                          -Dsonar.projectName=Retail-app-code-quality
+                    """
+                }
+            }
+        }
+
+    }
+
+    post {
+        success {
+            emailext (
+                subject: "SUCCESS: SonarQube Quality Gate Passed",
+                body: """
+                Hi Team,
+                
+                The SonarQube quality gate passed successfully.
+
+                You can view the report here:
+                http://44.227.100.103:9000/dashboard?id=Clahan-app-code-quality
+                username: admin, passwd: pass
+
+                If you want to download a PDF report, please use the SonarQube interface or a PDF plugin.
+
+                Regards,
+                Jenkins
+                """,
+                to: 'muraliclahan526@gmail.com'
+            )
+        }
+        failure {
+            emailext (
+                subject: "FAILED: SonarQube Quality Gate",
+                body: """
+                Hi Team,
+                
+                The SonarQube quality gate has failed.
+                
+                Please check the details:
+                http://44.227.100.103:9000/dashboard?id=Clahan-app-code-quality
+                username: admin, passwd: pass
+                
+                Regards,
+                Jenkins
+                """,
+                to: 'muraliclahan526@gmail.com'
+            )
+        }
+    }
+}
+
+
+
