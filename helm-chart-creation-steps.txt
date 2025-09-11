@@ -1,0 +1,19 @@
+Helm chart will be with the application app folder in main folder.
+  
+k8s-manifest files will be in the application location of the folder like inside bookmyshowapp/ and to run that we can use (  kubectl apply -f . ) .
+First install helm chart from helm install commands. First curl command and then chmod then gethelm one then check helm version.
+Step 1: Set Up Helm (If Not Installed)
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+helm version
+To use helm chart we can use commands to first to move all manifests yaml files to templates folder but first create helm chart.
+To create chart in root dir with app location create it inside the application folder. - helm create adi-chart.
+cd adi-chart.
+Go inside templates- rm -rf *
+Empty values.yaml.
+Place all values there and helm chart manifest files in templates.
+Go to location where manifest files are there and then move them like mv deployment.yaml service.yaml bookmyshowapp/templates/
+To create helm chart use this command: helm install adi-release --debug --dry-run adi-chart/ -n adi. (add namespace to create in namespace).
+This command will help to validate information of manifests yaml files.
+helm install adi-release adi-chart/ -n adi -To create the deployment and all, instead of install use upgrade to upgrade the revision.
