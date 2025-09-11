@@ -1,0 +1,206 @@
+Kubernetes Yaml files:
+
+1.Pod Yaml file:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: adi-pod
+  namespace: adi
+  labels:
+    app: adi-nginx
+spec:
+  containers:
+-name: adi-nginx
+image: nginx: latest
+ports:
+  - containerPort: 80
+
+
+2.ReplicaSet Yaml file:
+
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: adi-replica
+  namespace: adi
+  labels:
+    app: adi-nginx-rs
+spec:
+  replicas: 3
+  selector:
+    matchlabels:
+      app: adi-nginx-rs
+  template:
+   metadata: 
+     labels:
+        app: adi-nginx-rs
+   spec: 
+     containers:
+-name: adi-users-rs
+image: nginx:latest
+ports:
+-containerPort: 80
+
+
+3.Deployment.yaml file:
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adi-deployment
+  namespace: adi
+  labels:
+    app: adi-nginx-dp
+spec:
+  replicas: 3
+  selector:
+    matchLabels: 
+      app: adi-nginx-dp
+  template:
+    metadata:
+       labels:
+          app: adi-nginx-dp
+    spec:
+      containers:
+-name: adi-user-dp
+image: nginx:latest
+ports:
+-containerPort: 80
+
+
+4. Service.yaml file:
+
+1.ClusterIP yaml file:
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: adi-service
+  namespace: adi
+spec:
+  selector:
+    app: adi-ipl
+  ports:
+-protocol: TCP
+port: 80
+targetPort: 3000
+  type: ClusterIP
+
+2.NodePort yaml file:
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: adi-service
+  namespace: adi
+spec:
+  selector:
+    app: adi-ipl
+  ports:
+-protocol: TCP
+port: 80
+targetPort: 3000
+nodePort: 30080
+type: NodePort
+
+
+3.LoadBalancer yaml file:
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: adi-service
+  namespace: adi
+spec:
+  selector:
+    app: ipl
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer
+
+4.ExternalName yaml file:  
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: adi-service
+  namespace: adi
+spec:
+  selector:
+    app: ipl
+  ports:
+-protocol: TCP
+port: 80
+targetPort: 3000
+ExternalName: flipkart.com
+type: ExternalName
+
+5.Configmap.yaml file:
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: adi-ipl-configmap
+  namespace: adi
+data:
+  DB_HOST: “mydatabase”
+  DB_PORT: “27071”
+  APP_ENV: “prod”
+
+6.Secrets.yaml file:
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: adi-ipl-secret
+  namespace: adi
+type: Opaque
+data:
+  Username: bXVyYWxpLWlwbA==
+  Password: bXVyYWxpQDQ1NiUm
+
+
+
+
+
+
+
+
+
+
+Deployment file with confimaps and secrets configured: 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adi-deployment
+  namespace: adi
+  labels:
+    name: adi-nginx-dp
+spec:
+  replicas: 3
+  selector:
+    matchLabels: 
+      name: adi-nginx-dp
+  template:
+    metadata:
+       labels:
+          name: adi-nginx-dp
+    spec:
+      containers:
+-name: adi-user-dp
+image: nginx:latest
+ports:
+-containerPort: 80
+         envFrom:
+-confiMapRef:
+   name: adi-ipl-confiMap
+              -   secretRef:
+                      name: adi-ipl-secret
+
+
+
+
